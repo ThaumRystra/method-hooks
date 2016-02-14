@@ -33,6 +33,7 @@ Package.onTest(function(api) {
 
   api.addFiles([
     'tests/custom-matchers.js',
-    'tests/method-hooks-mixin.js'
+    'tests/method-hooks-mixin.js',
+    'tests/before-hooks-handler.js'
   ])
 });
