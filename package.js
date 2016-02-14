@@ -15,11 +15,24 @@ Package.onUse(function(api) {
   ]);
 
   api.addFiles([
-    'src/method-hooks.js'
+    'src/method-hooks-mixin.js'
   ])
 
   api.export('MethodHooks')
 });
 
 Package.onTest(function(api) {
+  api.use([
+    'ecmascript',
+    'stevezhu:lodash@4.1.0',
+    'lacosta:method-hooks@0.0.1',
+    'sanjo:jasmine@0.21.0',
+    'velocity:console-reporter@0.1.4',
+    'velocity:helpers@0.5.0'
+  ])
+
+  api.addFiles([
+    'tests/custom-matchers.js',
+    'tests/method-hooks-mixin.js'
+  ])
 });
