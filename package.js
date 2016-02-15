@@ -1,6 +1,6 @@
 Package.describe({
   name: 'lacosta:method-hooks',
-  version: '1.0.0',
+  version: '1.1.0',
   summary: 'Provide before and after hooks to methods created via mdg:validated-method',
   git: 'https://github.com/leonidez/method-hooks',
   documentation: 'README.md'
@@ -25,7 +25,7 @@ Package.onTest(function(api) {
   api.use([
     'ecmascript',
     'stevezhu:lodash@4.1.0',
-    'lacosta:method-hooks@1.0.0',
+    'lacosta:method-hooks@1.1.0',
     'sanjo:jasmine@0.21.0',
     'velocity:console-reporter@0.1.4',
     'velocity:helpers@0.5.0'
@@ -38,3 +38,4 @@ Package.onTest(function(api) {
     'tests/after-hooks-handler.js'
   ])
 });
+

@@ -52,4 +52,7 @@ Todos.methods.addTodo = new ValidatedMethod({
 
 # Testing
 
-Run tests with `velocity test-package ./`
+If using the `velocity-cli` tool run tests with `velocity test-package ./`
+
+To test using meteor's cli use `VELOCITY_TEST_PACKAGES=1 meteor test-packages
+--driver-package velocity:console-reporter ./`
