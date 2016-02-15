@@ -61,5 +61,31 @@ describe('before hooks handler', () => {
     expect(hooks.first).toHaveBeenCalledWith(args, options)
     expect(hooks.second).toHaveBeenCalledWith(args, options)
   })
+
+  it('accepts multiple arguments to the .run function', () => {
+    const hooks = {
+      first (firstArg, secondArg, options){},
+      second (firstArg, secondArg, options){}
+    }
+
+    spyOn(hooks, 'first').and.callThrough()
+    spyOn(hooks, 'second').and.callThrough()
+
+    const firstArg = 'first arg'
+    const secondArg = 'second arg'
+
+    const options = {
+      name: 'methodName',
+      beforeHooks: [
+        hooks.first, hooks.second
+      ],
+      run (){}
+    }
+
+    MethodHooks(options).run(firstArg, secondArg)
+
+    expect(hooks.first).toHaveBeenCalledWith(firstArg, secondArg, options)
+    expect(hooks.second).toHaveBeenCalledWith(firstArg, secondArg, options)
+  })
 })
 

@@ -16,15 +16,15 @@ MethodHooks = function(options){
 
   const newOptions = {...options}
 
-  newOptions.run = function(args){
+  newOptions.run = function(...args){
     if (beforeHooks && beforeHooks.length) {
-      beforeHooks.forEach(hook => hook(args, {...options}))
+      beforeHooks.forEach(hook => hook(...args, {...options}))
     }
 
-    const returnValue = run(args)
+    const returnValue = run(...args)
 
     if (afterHooks && afterHooks.length) {
-      afterHooks.forEach(hook => hook(args, returnValue, {...options}))
+      afterHooks.forEach(hook => hook(...args, returnValue, {...options}))
     }
 
     return returnValue
