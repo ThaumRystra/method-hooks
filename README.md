@@ -1,6 +1,6 @@
 # Method Hooks
 
-Use this mixin to add before and after hooks to validated methods creating using
+Use this mixin to add before and after hooks to validated methods created using
 the `mdg:validated-method` package.
 
 # Installation
