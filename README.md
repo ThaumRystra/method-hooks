@@ -19,7 +19,7 @@ Todos.methods = {}
 Next we declare our before and after hooks
 
 ```
-  // Before hooks take the arguments to the method and the options object
+  // Before hooks take the arguments to the method, and the method options
   // passed to the ValidatedMethod constructor as arguments
 const beforeHook = (methodArgs, methodOptions) => { }
 
