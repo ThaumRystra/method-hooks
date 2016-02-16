@@ -1,5 +1,5 @@
 describe('ValidatedMethod integration', () => {
-  it('takes Method Hooks as a mixin', () => {
+  it('takes MethodHooks as a mixin', () => {
     const method = new ValidatedMethod({
       name: 'methodName',
       mixins: [MethodHooks],
@@ -95,8 +95,8 @@ describe('ValidatedMethod integration', () => {
 
   it('calls all afterHooks passed to ValidatedMethod', () => {
     const hooks = {
-      first (methodArgs, methodOptions){},
-      second (methodArgs, methodOptions){}
+      first (methodArgs, returnValue, methodOptions){},
+      second (methodArgs, returnValue, methodOptions){}
     }
 
     spyOn(hooks, 'first').and.callThrough()
