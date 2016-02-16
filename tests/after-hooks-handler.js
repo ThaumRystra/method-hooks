@@ -19,11 +19,13 @@ describe('after hooks handler', () => {
   it('runs each function in the after hooks array', () => {
     const hooks = {
       first (){},
-      second (){}
+      second (){},
+      third (){}
     }
 
     spyOn(hooks, 'first').and.callThrough()
     spyOn(hooks, 'second').and.callThrough()
+    spyOn(hooks, 'third').and.callThrough()
 
     MethodHooks({
       name: 'methodName', afterHooks: [
@@ -33,16 +35,19 @@ describe('after hooks handler', () => {
 
     expect(hooks.first).toHaveBeenCalled()
     expect(hooks.second).toHaveBeenCalled()
+    expect(hooks.third).not.toHaveBeenCalled()
   })
 
   it('calls each after hook with the proper arguments', () => {
     const hooks = {
       first (args, returnValue, options){},
-      second (args, returnValue, options){}
+      second (args, returnValue, options){},
+      third (args, returnValue, options){}
     }
 
     spyOn(hooks, 'first').and.callThrough()
     spyOn(hooks, 'second').and.callThrough()
+    spyOn(hooks, 'third').and.callThrough()
 
     const args = 'testing'
     const returnValue = 'returned value: ' + args
@@ -61,39 +66,7 @@ describe('after hooks handler', () => {
 
     expect(hooks.first).toHaveBeenCalledWith(args, returnValue, options)
     expect(hooks.second).toHaveBeenCalledWith(args, returnValue, options)
-  })
-
-  it('accepts multiple arguments to the .run function', () => {
-    const hooks = {
-      first (firstArg, secondArg, returnValue, options){},
-      second (firstArg, secondArg, returnValue, options){}
-    }
-
-    spyOn(hooks, 'first').and.callThrough()
-    spyOn(hooks, 'second').and.callThrough()
-
-    const firstArg = 'first arg'
-    const secondArg = 'second arg'
-    const returnValue = 'first arg second arg'
-
-    const options = {
-      name: 'methodName',
-      afterHooks: [
-        hooks.first, hooks.second
-      ],
-      run (...args){
-        return args.join(' ')
-      }
-    }
-
-    MethodHooks(options).run(firstArg, secondArg)
-
-    expect(hooks.first).toHaveBeenCalledWith(
-      firstArg, secondArg, returnValue, options
-    )
-    expect(hooks.second).toHaveBeenCalledWith(
-      firstArg, secondArg, returnValue, options
-    )
+    expect(hooks.third).not.toHaveBeenCalledWith(args, returnValue, options)
   })
 })
 
