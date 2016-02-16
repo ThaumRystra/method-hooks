@@ -19,11 +19,13 @@ describe('before hooks handler', () => {
   it('runs each function in the before hooks array', () => {
     const hooks = {
       first (){},
-      second (){}
+      second (){},
+      third (){}
     }
 
     spyOn(hooks, 'first').and.callThrough()
     spyOn(hooks, 'second').and.callThrough()
+    spyOn(hooks, 'third').and.callThrough()
 
     MethodHooks({
       name: 'methodName',
@@ -35,20 +37,23 @@ describe('before hooks handler', () => {
 
     expect(hooks.first).toHaveBeenCalled()
     expect(hooks.second).toHaveBeenCalled()
+    expect(hooks.third).not.toHaveBeenCalled()
   })
 
   it('calls each before hook with the proper arguments', () => {
     const hooks = {
-      first (args, options){},
-      second (args, options){}
+      first (methodArgs, methodOptions){},
+      second (methodArgs, methodOptions){},
+      third (methodArgs, methodOptions){}
     }
 
     spyOn(hooks, 'first').and.callThrough()
     spyOn(hooks, 'second').and.callThrough()
+    spyOn(hooks, 'third').and.callThrough()
 
-    const args = 'testing'
+    const methodArgs = {firstArg: 'testing'}
 
-    const options = {
+    const methodOptions = {
       name: 'methodName',
       beforeHooks: [
         hooks.first, hooks.second
@@ -56,36 +61,11 @@ describe('before hooks handler', () => {
       run (){}
     }
 
-    MethodHooks(options).run(args)
+    MethodHooks(methodOptions).run(methodArgs)
 
-    expect(hooks.first).toHaveBeenCalledWith(args, options)
-    expect(hooks.second).toHaveBeenCalledWith(args, options)
-  })
-
-  it('accepts multiple arguments to the .run function', () => {
-    const hooks = {
-      first (firstArg, secondArg, options){},
-      second (firstArg, secondArg, options){}
-    }
-
-    spyOn(hooks, 'first').and.callThrough()
-    spyOn(hooks, 'second').and.callThrough()
-
-    const firstArg = 'first arg'
-    const secondArg = 'second arg'
-
-    const options = {
-      name: 'methodName',
-      beforeHooks: [
-        hooks.first, hooks.second
-      ],
-      run (){}
-    }
-
-    MethodHooks(options).run(firstArg, secondArg)
-
-    expect(hooks.first).toHaveBeenCalledWith(firstArg, secondArg, options)
-    expect(hooks.second).toHaveBeenCalledWith(firstArg, secondArg, options)
+    expect(hooks.first).toHaveBeenCalledWith(methodArgs, methodOptions)
+    expect(hooks.second).toHaveBeenCalledWith(methodArgs, methodOptions)
+    expect(hooks.third).not.toHaveBeenCalledWith(methodArgs, methodOptions)
   })
 })
 
