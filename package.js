@@ -25,7 +25,9 @@ Package.onTest(function(api) {
   api.use([
     'ecmascript',
     'stevezhu:lodash@4.1.0',
+    'mdg:validated-method@1.0.1',
     'lacosta:method-hooks@1.1.0',
+    'aldeed:simple-schema@1.5.3',
     'sanjo:jasmine@0.21.0',
     'velocity:console-reporter@0.1.4',
     'velocity:helpers@0.5.0'
