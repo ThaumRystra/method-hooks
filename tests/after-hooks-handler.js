@@ -40,33 +40,37 @@ describe('after hooks handler', () => {
 
   it('calls each after hook with the proper arguments', () => {
     const hooks = {
-      first (args, returnValue, options){},
-      second (args, returnValue, options){},
-      third (args, returnValue, options){}
+      first (methodArgs, returnValue, methodOptions){},
+      second (methodArgs, returnValue, methodOptions){},
+      third (methodArgs, returnValue, methodOptions){}
     }
 
     spyOn(hooks, 'first').and.callThrough()
     spyOn(hooks, 'second').and.callThrough()
     spyOn(hooks, 'third').and.callThrough()
 
-    const args = 'testing'
-    const returnValue = 'returned value: ' + args
+    const methodArgs = {testArg: 'testing'}
+    const returnValue = 'returned value: testing'
 
-    const options = {
+    const methodOptions = {
       name: 'methodName',
       afterHooks: [
         hooks.first, hooks.second
       ],
-      run (args){
-        return 'returned value: ' + args
+      run ({testArg}){
+        return 'returned value: ' + testArg
       }
     }
 
-    MethodHooks(options).run(args)
+    MethodHooks(methodOptions).run(methodArgs)
 
-    expect(hooks.first).toHaveBeenCalledWith(args, returnValue, options)
-    expect(hooks.second).toHaveBeenCalledWith(args, returnValue, options)
-    expect(hooks.third).not.toHaveBeenCalledWith(args, returnValue, options)
+    expect(hooks.first).toHaveBeenCalledWith(
+      methodArgs, returnValue, methodOptions
+    )
+    expect(hooks.second).toHaveBeenCalledWith(
+      methodArgs, returnValue, methodOptions
+    )
+    expect(hooks.third).not.toHaveBeenCalled()
   })
 })
 

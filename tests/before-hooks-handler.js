@@ -65,7 +65,7 @@ describe('before hooks handler', () => {
 
     expect(hooks.first).toHaveBeenCalledWith(methodArgs, methodOptions)
     expect(hooks.second).toHaveBeenCalledWith(methodArgs, methodOptions)
-    expect(hooks.third).not.toHaveBeenCalledWith(methodArgs, methodOptions)
+    expect(hooks.third).not.toHaveBeenCalled()
   })
 })
 
