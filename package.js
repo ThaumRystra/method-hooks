@@ -37,7 +37,8 @@ Package.onTest(function(api) {
     'tests/custom-matchers.js',
     'tests/method-hooks-mixin.js',
     'tests/before-hooks-handler.js',
-    'tests/after-hooks-handler.js'
+    'tests/after-hooks-handler.js',
+    'tests/method-integration.js'
   ])
 });
 
