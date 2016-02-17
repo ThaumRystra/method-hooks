@@ -42,9 +42,15 @@ describe('before hooks handler', () => {
 
   it('calls each before hook with the proper arguments', () => {
     const hooks = {
-      first (methodArgs, methodOptions){},
-      second (methodArgs, methodOptions){},
-      third (methodArgs, methodOptions){}
+      first (methodArgs, methodOptions){
+        return methodArgs
+      },
+      second (methodArgs, methodOptions){
+        return methodArgs
+      },
+      third (methodArgs, methodOptions){
+        return methodArgs
+      }
     }
 
     spyOn(hooks, 'first').and.callThrough()
@@ -63,6 +69,7 @@ describe('before hooks handler', () => {
 
     const beforeOptions = {...methodOptions}
     delete beforeOptions.beforeHooks
+    delete beforeOptions.run
 
     MethodHooks(methodOptions).run(methodArgs)
 
@@ -87,15 +94,44 @@ describe('before hooks handler', () => {
       validate: new SimpleSchema({
         text: {type: String}
       }).validator(),
-      run ({text}){
-        return {text}
-      }
+      run ({text}){ return {text} }
     })
 
     spyOn(newOptions, 'run').and.callThrough()
 
-    expect(
-      newOptions.run({text: 'original args'})
-    ).toEqual({text: 'modified args'})
+    expect(newOptions.run({text: 'original args'}))
+      .toEqual({text: 'modified args'})
+  })
+
+  it('allows multiple hooks to modify the method arguments', () => {
+    const hooks = {
+      first (methodArgs, methodOptions){
+        const newArgs = {...methodArgs}
+        newArgs.text = newArgs.text + ' first hook'
+        return newArgs
+      },
+      second (methodArgs, methodOptions){
+        const newArgs = {...methodArgs}
+        newArgs.text = newArgs.text + ' second hook'
+        return newArgs
+      }
+    }
+
+    spyOn(hooks, 'first').and.callThrough()
+    spyOn(hooks, 'second').and.callThrough()
+
+    const newOptions = MethodHooks({
+      name: 'multipleModifiedArgsMethod',
+      beforeHooks: [hooks.first, hooks.second],
+      validate: new SimpleSchema({
+        text: {type: String}
+      }).validator(),
+      run ({text}){ return {text} }
+    })
+
+    spyOn(newOptions, 'run').and.callThrough()
+
+    expect(newOptions.run({text: 'original args'}))
+      .toEqual({text: 'original args first hook second hook'})
   })
 })

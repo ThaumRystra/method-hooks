@@ -8,32 +8,29 @@ MethodHooks = function(options){
     run: Function
   }))
 
-  const {
-    beforeHooks,
-    afterHooks,
-    run
-  } = options
+  const {beforeHooks, afterHooks, run} = options
 
+    // remove hooks to avoid sending hooks to themselves
+    // remove run function to avoid sending hooks overridden #run
   delete options.beforeHooks
   delete options.afterHooks
-  
-  const newOptions = {...options}
+  delete options.run
 
-  newOptions.run = function(args){
-    let beforeArgs
+  const modifiedOptions = {...options}
 
-    if (beforeHooks && beforeHooks.length) {
-      beforeHooks.forEach(hook => beforeArgs = hook(args, {...options}))
-    }
+  modifiedOptions.run = function(args){
+    const modifiedArgs = (beforeHooks || []).reduce((newArgs, hook) => {
+      return hook(newArgs, {...options})
+    }, args)
 
-    let returnValue = run(beforeArgs || args)
+    const returnValue = run(modifiedArgs)
 
-    if (afterHooks && afterHooks.length) {
-      afterHooks.forEach(hook => returnValue = hook(beforeArgs || args, returnValue, {...options}))
-    }
+    const modifiedReturnValue = (afterHooks || []).reduce((newReturnValue, hook) => {
+      return hook(modifiedArgs, newReturnValue, {...options})
+    }, returnValue)
 
-    return returnValue
+    return modifiedReturnValue
   }
 
-  return newOptions
+  return modifiedOptions
 };
