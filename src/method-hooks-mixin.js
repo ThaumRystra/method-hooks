@@ -14,17 +14,22 @@ MethodHooks = function(options){
     run
   } = options
 
+  delete options.beforeHooks
+  delete options.afterHooks
+  
   const newOptions = {...options}
 
-  newOptions.run = function(...args){
+  newOptions.run = function(args){
+    let beforeArgs
+
     if (beforeHooks && beforeHooks.length) {
-      beforeHooks.forEach(hook => hook(...args, {...options}))
+      beforeHooks.forEach(hook => beforeArgs = hook(args, {...options}))
     }
 
-    const returnValue = run(...args)
+    let returnValue = run(beforeArgs || args)
 
     if (afterHooks && afterHooks.length) {
-      afterHooks.forEach(hook => hook(...args, returnValue, {...options}))
+      afterHooks.forEach(hook => returnValue = hook(beforeArgs || args, returnValue, {...options}))
     }
 
     return returnValue
@@ -32,4 +37,3 @@ MethodHooks = function(options){
 
   return newOptions
 };
-

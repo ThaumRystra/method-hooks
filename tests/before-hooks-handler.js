@@ -61,11 +61,41 @@ describe('before hooks handler', () => {
       run (){}
     }
 
+    const beforeOptions = {...methodOptions}
+    delete beforeOptions.beforeHooks
+
     MethodHooks(methodOptions).run(methodArgs)
 
-    expect(hooks.first).toHaveBeenCalledWith(methodArgs, methodOptions)
-    expect(hooks.second).toHaveBeenCalledWith(methodArgs, methodOptions)
+    expect(hooks.first).toHaveBeenCalledWith(methodArgs, beforeOptions)
+    expect(hooks.second).toHaveBeenCalledWith(methodArgs, beforeOptions)
     expect(hooks.third).not.toHaveBeenCalled()
   })
-})
 
+  it('can modify the method arguments before being passed to the method', () => {
+    const methods = {
+      hook (methodArgs, methodOptions){
+        methodArgs.text = 'modified args'
+        return methodArgs
+      },
+    }
+
+    spyOn(methods, 'hook').and.callThrough()
+
+    const newOptions = MethodHooks({
+      name: 'modifiedArgsMethod',
+      beforeHooks: [methods.hook],
+      validate: new SimpleSchema({
+        text: {type: String}
+      }).validator(),
+      run ({text}){
+        return {text}
+      }
+    })
+
+    spyOn(newOptions, 'run').and.callThrough()
+
+    expect(
+      newOptions.run({text: 'original args'})
+    ).toEqual({text: 'modified args'})
+  })
+})

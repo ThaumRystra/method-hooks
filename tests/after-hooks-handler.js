@@ -40,7 +40,9 @@ describe('after hooks handler', () => {
 
   it('calls each after hook with the proper arguments', () => {
     const hooks = {
-      first (methodArgs, returnValue, methodOptions){},
+      first (methodArgs, returnValue, methodOptions){
+        return returnValue
+      },
       second (methodArgs, returnValue, methodOptions){},
       third (methodArgs, returnValue, methodOptions){}
     }
