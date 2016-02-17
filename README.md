@@ -21,7 +21,12 @@ Next we declare our before and after hooks
 ```
   // Before hooks take the arguments to the method, and the method options
   // passed to the ValidatedMethod constructor as arguments
-const beforeHook = (methodArgs, methodOptions) => { }
+
+  // Before hooks return an arguments object that is then passed down
+  // to the method. Hooks can modify the object however is needed.
+const beforeHook = (methodArgs, methodOptions) => {
+  return methodArgs
+}
 
   // After hooks take the arguments to the method, the method's return value,
   // and the method options passed to the ValidatedMethod constructor as arguments
