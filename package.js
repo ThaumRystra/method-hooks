@@ -29,7 +29,7 @@ Package.onTest(function(api) {
     'lacosta:method-hooks@1.4.0',
     'aldeed:simple-schema@1.5.3',
     'sanjo:jasmine@0.21.0',
-    'velocity:console-reporter@0.1.4',
+    'velocity:html-reporter@0.9.1',
     'velocity:helpers@0.5.0'
   ])
 
