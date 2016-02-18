@@ -99,4 +99,34 @@ describe('after hooks handler', () => {
     expect(newOptions.run({text: 'original args'}))
       .toEqual('original args modified')
   })
+
+  it('allows multiple hooks to modify the return value', () => {
+    const hooks = {
+      first (methodArgs, returnValue, methodOptions){
+        const modifiedReturnValue = returnValue + ' modified once'
+        return modifiedReturnValue
+      },
+      second (methodArgs, returnValue, methodOptions){
+        const modifiedReturnValue = returnValue + ' modified twice'
+        return modifiedReturnValue
+      }
+    }
+    
+    spyOn(hooks, 'first').and.callThrough()
+    spyOn(hooks, 'second').and.callThrough()
+
+    const newOptions = MethodHooks({
+      name: 'multipleAfterHooksMethod',
+      afterHooks: [hooks.first, hooks.second],
+      validate: new SimpleSchema({
+        text: {type: String}
+      }).validator(),
+      run ({text}){ return text }
+    })
+
+    spyOn(newOptions, 'run').and.callThrough()
+
+    expect(newOptions.run({text: 'original args'}))
+      .toEqual('original args modified once modified twice')
+  })
 })
