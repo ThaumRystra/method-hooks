@@ -74,5 +74,29 @@ describe('after hooks handler', () => {
     )
     expect(hooks.third).not.toHaveBeenCalled()
   })
-})
 
+  it('can modify the return value before being returned as the result', () => {
+    const hooks = {
+      first (methodArgs, returnValue, methodOptions){
+        const modifiedReturnValue = returnValue + ' modified'
+        return modifiedReturnValue
+      },
+    }
+
+    spyOn(hooks, 'first').and.callThrough()
+
+    const newOptions = MethodHooks({
+      name: 'afterHookMethod',
+      afterHooks: [hooks.first],
+      validate: new SimpleSchema({
+        text: {type: String}
+      }).validator(),
+      run ({text}){ return text }
+    })
+    
+    spyOn(newOptions, 'run').and.callThrough()
+
+    expect(newOptions.run({text: 'original args'}))
+      .toEqual('original args modified')
+  })
+})
