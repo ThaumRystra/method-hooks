@@ -30,7 +30,12 @@ const beforeHook = (methodArgs, methodOptions) => {
 
   // After hooks take the arguments to the method, the method's return value,
   // and the method options passed to the ValidatedMethod constructor as arguments
-const afterHook = (methodArgs, returnValue, methodOptions) => { }
+
+  // After hooks return the result of calling the method. To not modify the result 
+  // at all do:
+const afterHook = (methodArgs, returnValue, methodOptions) => {
+  return returnValue
+}
 ```
 
 Then we define our method by including the mixin and our hooks
@@ -40,7 +45,7 @@ Todos.methods.addTodo = new ValidatedMethod({
   name: 'Todos.methods.addTodo',
   mixins: [MethodHooks],
 
-    // both hooks take an array of functions as arguments
+    // both hook properties take an array of functions as a value
   beforeHooks: [beforeHook],
   afterHooks: [afterHook],
 
