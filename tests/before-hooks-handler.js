@@ -1,31 +1,36 @@
-describe('before hooks handler', () => {
-  it('takes an array of functions', () => {
-    const callWithIncorrectHooks = () => {
-      return MethodHooks({
-        name: 'methodName', beforeHooks: () => {}, run: () => {}
-      })
+describe('before hooks handler', function(){
+  beforeEach(function(){
+    this.hooks = {
+      first (methodArgs, methodOptions){
+        return {...methodArgs, text: `${methodArgs.text} first hook`}
+      },
+      second (methodArgs, methodOptions){
+        return {...methodArgs, text: `${methodArgs.text} second hook`}
+      },
+      third (methodArgs, methodOptions){
+        return {...methodArgs, text: `${methodArgs.text} third hook`}
+      }
     }
 
-    const callWithCorrectHooks = () => {
-      return MethodHooks({
-        name: 'methodName', beforeHooks: [() => {}], run: () => {}
-      })
-    }
-
-    expect(callWithIncorrectHooks).toThrow()
-    expect(callWithCorrectHooks).not.toThrow()
+    spyOn(this.hooks, 'first').and.callThrough()
+    spyOn(this.hooks, 'second').and.callThrough()
+    spyOn(this.hooks, 'third').and.callThrough()
   })
 
-  it('runs each function in the before hooks array', () => {
-    const hooks = {
-      first (){},
-      second (){},
-      third (){}
-    }
+  it('takes an array of functions', function(){
+    const callWithCorrectHooks = () => (
+      MethodHooks({name: 'method', beforeHooks: [this.hooks.first], run (){}})
+    )
+    const callWithIncorrectHooks = () => (
+      MethodHooks({name: 'method', beforeHooks: this.hooks.first, run (){}})
+    )
 
-    spyOn(hooks, 'first').and.callThrough()
-    spyOn(hooks, 'second').and.callThrough()
-    spyOn(hooks, 'third').and.callThrough()
+    expect(callWithCorrectHooks).not.toThrow()
+    expect(callWithIncorrectHooks).toThrow()
+  })
+
+  it('runs each function in the before hooks array', function(){
+    const {hooks} = this
 
     MethodHooks({
       name: 'methodName',
@@ -33,64 +38,45 @@ describe('before hooks handler', () => {
         hooks.first, hooks.second
       ],
       run (){}
-    }).run()
+    }).run({text: 'original args'})
 
     expect(hooks.first).toHaveBeenCalled()
     expect(hooks.second).toHaveBeenCalled()
     expect(hooks.third).not.toHaveBeenCalled()
   })
 
-  it('calls each before hook with the proper arguments', () => {
-    const hooks = {
-      first (methodArgs, methodOptions){
-        return methodArgs
-      },
-      second (methodArgs, methodOptions){
-        return methodArgs
-      },
-      third (methodArgs, methodOptions){
-        return methodArgs
-      }
-    }
-
-    spyOn(hooks, 'first').and.callThrough()
-    spyOn(hooks, 'second').and.callThrough()
-    spyOn(hooks, 'third').and.callThrough()
-
-    const methodArgs = {firstArg: 'testing'}
+  it('calls each before hook with the proper arguments', function(){
+    const {hooks} = this
 
     const methodOptions = {
       name: 'methodName',
       beforeHooks: [
         hooks.first, hooks.second
       ],
-      run (){}
+      run ({text}){ return {text} }
     }
 
     const beforeOptions = {...methodOptions}
     delete beforeOptions.beforeHooks
     delete beforeOptions.run
 
-    MethodHooks(methodOptions).run(methodArgs)
+    MethodHooks(methodOptions).run({text: 'original args'})
 
-    expect(hooks.first).toHaveBeenCalledWith(methodArgs, beforeOptions)
-    expect(hooks.second).toHaveBeenCalledWith(methodArgs, beforeOptions)
+    expect(hooks.first).toHaveBeenCalledWith({
+      text: 'original args'
+    }, beforeOptions)
+    expect(hooks.second).toHaveBeenCalledWith({
+      text: 'original args first hook'
+    }, beforeOptions)
     expect(hooks.third).not.toHaveBeenCalled()
   })
 
-  it('can modify the method arguments before being passed to the method', () => {
-    const methods = {
-      hook (methodArgs, methodOptions){
-        methodArgs.text = 'modified args'
-        return methodArgs
-      },
-    }
-
-    spyOn(methods, 'hook').and.callThrough()
+  it('can modify the method arguments before being passed to the method', function(){
+    const {hooks} = this
 
     const newOptions = MethodHooks({
       name: 'modifiedArgsMethod',
-      beforeHooks: [methods.hook],
+      beforeHooks: [hooks.first],
       validate: new SimpleSchema({
         text: {type: String}
       }).validator(),
@@ -100,25 +86,11 @@ describe('before hooks handler', () => {
     spyOn(newOptions, 'run').and.callThrough()
 
     expect(newOptions.run({text: 'original args'}))
-      .toEqual({text: 'modified args'})
+      .toEqual({text: 'original args first hook'})
   })
 
-  it('allows multiple hooks to modify the method arguments', () => {
-    const hooks = {
-      first (methodArgs, methodOptions){
-        const newArgs = {...methodArgs}
-        newArgs.text = newArgs.text + ' first hook'
-        return newArgs
-      },
-      second (methodArgs, methodOptions){
-        const newArgs = {...methodArgs}
-        newArgs.text = newArgs.text + ' second hook'
-        return newArgs
-      }
-    }
-
-    spyOn(hooks, 'first').and.callThrough()
-    spyOn(hooks, 'second').and.callThrough()
+  it('allows multiple hooks to modify the method arguments', function(){
+    const {hooks} = this
 
     const newOptions = MethodHooks({
       name: 'multipleModifiedArgsMethod',
