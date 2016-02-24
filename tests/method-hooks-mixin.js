@@ -7,25 +7,25 @@ describe('MethodHooks mixin', () => {
   })
 
   it('takes an object with required keys as an argument', () => {
-    const callWithoutArguments = () => {
-      return MethodHooks()
+    const calls = {
+      withoutArgs (){
+        return MethodHooks()
+      },
+      withoutKeys (){
+        return MethodHooks({})
+      },
+      withRequiredKeys (){
+        return MethodHooks({name: 'method1', run: () => {}})
+      }
     }
 
-    const callWithoutKeys = () => {
-      return MethodHooks({})
-    }
-
-    const callWithRequiredKeys = () => {
-      return MethodHooks({name: 'methodName', run: () => {}})
-    }
-
-    expect(callWithoutArguments).toThrow()
-    expect(callWithoutKeys).toThrow()
-    expect(callWithRequiredKeys).not.toThrow()
+    expect(calls.withoutArgs).toThrow()
+    expect(calls.withoutKeys).toThrow()
+    expect(calls.withRequiredKeys).not.toThrow()
   })
 
   it('returns an options object with appropriate keys', () => {
-    const newOptions = MethodHooks({name: 'methodName', run: () => {}})
+    const newOptions = MethodHooks({name: 'method2', run: () => {}})
 
     expect(newOptions).toBeOfType('object')
     expect(newOptions.name).toBeDefined()
