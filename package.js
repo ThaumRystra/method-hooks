@@ -1,6 +1,6 @@
 Package.describe({
   name: 'lacosta:method-hooks',
-  version: '1.5.1',
+  version: '1.5.2',
   summary: 'Provide before and after hooks to methods created via mdg:validated-method',
   git: 'https://github.com/leonidez/method-hooks',
   documentation: 'README.md'
@@ -26,7 +26,7 @@ Package.onTest(function(api) {
     'ecmascript',
     'stevezhu:lodash@4.1.0',
     'mdg:validated-method@1.0.1',
-    'lacosta:method-hooks@1.5.1',
+    'lacosta:method-hooks@1.5.2',
     'aldeed:simple-schema@1.5.3',
     'sanjo:jasmine@0.21.0',
     'velocity:html-reporter@0.9.1',
