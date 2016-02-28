@@ -33,11 +33,7 @@ describe('before hooks handler', function(){
     const {hooks} = this
 
     MethodHooks({
-      name: 'methodName',
-      beforeHooks: [
-        hooks.first, hooks.second
-      ],
-      run (){}
+      name: 'method', beforeHooks: [hooks.first, hooks.second], run (){}
     }).run({text: 'original args'})
 
     expect(hooks.first).toHaveBeenCalled()
@@ -47,12 +43,9 @@ describe('before hooks handler', function(){
 
   it('calls each before hook with the proper arguments', function(){
     const {hooks} = this
-
     const methodOptions = {
       name: 'methodName',
-      beforeHooks: [
-        hooks.first, hooks.second
-      ],
+      beforeHooks: [hooks.first, hooks.second],
       run ({text}){ return {text} }
     }
 
