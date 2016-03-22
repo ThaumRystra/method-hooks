@@ -1,5 +1,15 @@
-describe('ValidatedMethod integration', () => {
-  it('takes MethodHooks as a mixin', () => {
+describe('ValidatedMethod integration', function(){
+  beforeEach(function(){
+    this.hooks = {
+      first (methodArgs, methodOptions){},
+      second (methodArgs, methodOptions){}
+    }
+
+    spyOn(this.hooks, 'first').and.callThrough()
+    spyOn(this.hooks, 'second').and.callThrough()
+  })
+
+  it('takes MethodHooks as a mixin', function(){
     const method = new ValidatedMethod({
       name: 'methodName',
       mixins: [MethodHooks],
@@ -14,7 +24,7 @@ describe('ValidatedMethod integration', () => {
     expect(callMethod).not.toThrow()
   })
 
-  it('takes beforeHooks as an optional property with an array value', () => {
+  it('takes beforeHooks as an optional property with an array value', function(){
     const methodWithHooks = new ValidatedMethod({
       name: 'methodWithHooks',
       mixins: [MethodHooks],
@@ -42,7 +52,7 @@ describe('ValidatedMethod integration', () => {
     expect(callMethodWithoutHooks).not.toThrow()
   })
 
-  it('takes afterHooks as an optioanl property with an array value', () => {
+  it('takes afterHooks as an optioanl property with an array value', function(){
     const methodWithHooks = new ValidatedMethod({
       name: 'methodWithAfterHooks',
       mixins: [MethodHooks],
@@ -70,14 +80,8 @@ describe('ValidatedMethod integration', () => {
     expect(callMethodWithoutHooks).not.toThrow()
   })
 
-  it('calls all beforeHooks passed to ValidatedMethod', () => {
-    const hooks = {
-      first (methodArgs, methodOptions){},
-      second (methodArgs, methodOptions){}
-    }
-
-    spyOn(hooks, 'first').and.callThrough()
-    spyOn(hooks, 'second').and.callThrough()
+  it('calls all beforeHooks passed to ValidatedMethod', function(){
+    const {hooks} = this
 
     const methodWithHooks = new ValidatedMethod({
       name: 'methodWithMultipleBeforeHooks',
@@ -93,14 +97,8 @@ describe('ValidatedMethod integration', () => {
     expect(hooks.second).toHaveBeenCalled()
   })
 
-  it('calls all afterHooks passed to ValidatedMethod', () => {
-    const hooks = {
-      first (methodArgs, returnValue, methodOptions){},
-      second (methodArgs, returnValue, methodOptions){}
-    }
-
-    spyOn(hooks, 'first').and.callThrough()
-    spyOn(hooks, 'second').and.callThrough()
+  it('calls all afterHooks passed to ValidatedMethod', function(){
+    const {hooks} = this
 
     const methodWithHooks = new ValidatedMethod({
       name: 'methodWithMultipleAfterHooks',
