@@ -18,13 +18,13 @@ MethodHooks = function(options){
 
   const finalOptions = {...options, run (args){
     const finalArgs = beforeHooks.reduce((modifiedArgs, hook) => {
-      return hook(modifiedArgs, {...options})
+      return hook.call(this, modifiedArgs, {...options})
     }, args)
 
-    const result = run(finalArgs)
+    const result = run.call(this, finalArgs)
 
     const finalResult = afterHooks.reduce((modifiedResult, hook) => {
-      return hook(finalArgs, modifiedResult, {...options})
+      return hook.call(this, finalArgs, modifiedResult, {...options})
     }, result)
 
     return finalResult
